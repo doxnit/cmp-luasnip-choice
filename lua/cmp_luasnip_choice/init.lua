@@ -50,23 +50,21 @@ function M.source:get_keyword_pattern()
     return ''
 end
 
-function M.source:complete(params, callback)
+function M.source:complete(_, callback)
     local items = {}
-    local choices = require('luasnip.session').active_choice_node.choices
-    for _, choice in ipairs(choices) do
-        local copy = choice:copy()
-        copy:static_init()
 
-        local text = ''
-        for _, str in ipairs(copy:get_static_text()) do
-            text = text .. str .. '\n'
-        end
+    local choices_ok, choice_docstrings = pcall(require('luasnip').get_current_choices)
+    if not choices_ok then
+        -- no choice active: return no completion-items.
+        callback(items)
+    end
 
+    for _, choice_docstring in ipairs(choice_docstrings) do
         table.insert(items, {
-            label = copy:get_static_text()[1],
-            word = copy:get_static_text()[1],
+            label = choice_docstring,
+            word = "",
             index = _,
-            documentation = text,
+            documentation = choice_docstring,
             kind = cmp.lsp.CompletionItemKind.Snippet,
         })
     end
