@@ -62,7 +62,7 @@ function M.source:complete(_, callback)
     for _, choice_docstring in ipairs(choice_docstrings) do
         table.insert(items, {
             label = choice_docstring,
-            word = choice_docstring,
+            word = "",
             index = _,
             documentation = choice_docstring,
             kind = cmp.lsp.CompletionItemKind.Snippet,
